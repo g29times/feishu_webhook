@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>划线取词助手</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    body {
+      width: 320px;
+      padding: 20px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .header h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 5px;
+    }
+    .header p {
+      font-size: 12px;
+      opacity: 0.9;
+    }
+    .card {
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(10px);
+      border-radius: 12px;
+      padding: 15px;
+      margin-bottom: 15px;
+    }
+    .card h3 {
+      font-size: 14px;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+    .card p {
+      font-size: 13px;
+      line-height: 1.6;
+      opacity: 0.95;
+    }
+    .steps {
+      list-style: none;
+    }
+    .steps li {
+      font-size: 13px;
+      line-height: 1.8;
+      padding-left: 20px;
+      position: relative;
+      opacity: 0.95;
+    }
+    .steps li:before {
+      content: "✓";
+      position: absolute;
+      left: 0;
+      font-weight: bold;
+    }
+    .status {
+      text-align: center;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 8px;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .footer {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 11px;
+      opacity: 0.8;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>📝 划线取词助手</h1>
+    <p>快速收集网页灵感</p>
+  </div>
+
+  <div class="card">
+    <h3>使用方法</h3>
+    <ul class="steps">
+      <li>在任意网页上选中文字</li>
+      <li>点击出现的紫色圆形按钮</li>
+      <li>选中的文字将发送到飞书</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>Webhook地址</h3>
+    <p style="font-size: 11px; word-break: break-all; opacity: 0.8;">
+      https://www.feishu.cn/flow/api/trigger-webhook/f0b419896d69c20daf099813dfcf3126
+    </p>
+  </div>
+
+  <div class="status">
+    ✅ 插件运行中
+  </div>
+
+  <div class="footer">
+    v1.0 | 随时随地收集想法
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
