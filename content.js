@@ -235,7 +235,9 @@
         </div>
         <div class="note-list-container"></div>
         <div class="note-input-container">
+          <input type="text" class="note-input-title" placeholder="标题 (可选)" />
           <textarea class="note-input-textarea" placeholder="记录你对这个页面的想法..."></textarea>
+          <input type="text" class="note-input-labels" placeholder="标签 (可选，用逗号分隔)" />
           <div class="note-input-actions">
             <button class="note-input-btn primary">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -252,14 +254,19 @@
       this.sidebar.querySelector('.note-input-btn.primary').addEventListener('click', () => this.addNote());
       
       this.noteList = this.sidebar.querySelector('.note-list-container');
+      this.titleInput = this.sidebar.querySelector('.note-input-title');
       this.textarea = this.sidebar.querySelector('.note-input-textarea');
+      this.labelsInput = this.sidebar.querySelector('.note-input-labels');
       
       // 支持 Ctrl+Enter 快速添加
-      this.textarea.addEventListener('keydown', (e) => {
+      const handleShortcut = (e) => {
         if (e.ctrlKey && e.key === 'Enter') {
           this.addNote();
         }
-      });
+      };
+      this.titleInput.addEventListener('keydown', handleShortcut);
+      this.textarea.addEventListener('keydown', handleShortcut);
+      this.labelsInput.addEventListener('keydown', handleShortcut);
       
       document.body.appendChild(this.sidebar);
       
@@ -326,7 +333,7 @@
         this.noteList.innerHTML = `
           <div class="note-list-empty">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+              <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2 2v-7"></path>
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
             </svg>
             <div>还没有笔记，开始记录吧！</div>
@@ -338,12 +345,26 @@
       // 按时间倒序显示（最新的在上面）
       const sortedNotes = [...this.notes].sort((a, b) => b.createdAt - a.createdAt);
       
-      this.noteList.innerHTML = sortedNotes.map(note => `
+      this.noteList.innerHTML = sortedNotes.map(note => {
+        const titleHtml = note.title ? `<div class="note-item-title">${this.escapeHtml(note.title)}</div>` : '';
+        const labelsHtml = note.labels && note.labels.length > 0 
+          ? `<div class="note-item-labels">${note.labels.map(l => `<span class="note-label-tag">${this.escapeHtml(l)}</span>`).join('')}</div>` 
+          : '';
+          
+        return `
         <div class="note-item" data-id="${note.id}">
+          ${titleHtml}
           <div class="note-item-content">${this.escapeHtml(note.content)}</div>
+          ${labelsHtml}
           <div class="note-item-footer">
             <div class="note-item-time">${this.formatTime(note.createdAt)}</div>
             <div class="note-item-actions">
+              <button class="note-item-btn copy" data-action="copy" title="复制内容">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                </svg>
+              </button>
               <button class="note-item-btn send" data-action="send" title="发送到飞书">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <line x1="22" y1="2" x2="11" y2="13"></line>
@@ -359,7 +380,7 @@
             </div>
           </div>
         </div>
-      `).join('');
+      `}).join('');
 
       // 绑定按钮事件
       this.noteList.querySelectorAll('.note-item-btn').forEach(btn => {
@@ -372,6 +393,8 @@
             this.sendNoteToWebhook(noteId);
           } else if (action === 'delete') {
             this.deleteNote(noteId);
+          } else if (action === 'copy') {
+            this.copyNoteContent(noteId);
           }
         });
       });
@@ -380,15 +403,22 @@
     // 添加笔记
     async addNote() {
       const content = this.textarea.value.trim();
+      const title = this.titleInput.value.trim();
+      const labelsStr = this.labelsInput.value.trim();
       
-      if (!content) {
+      if (!content && !title) {
         this.textarea.focus();
         return;
       }
 
+      // 解析标签
+      const labels = labelsStr ? labelsStr.split(/[,，]/).map(s => s.trim()).filter(s => s) : [];
+
       const note = {
         id: Date.now(),
         content: content,
+        title: title,
+        labels: labels,
         createdAt: Date.now()
       };
 
@@ -397,6 +427,8 @@
       
       // 清空输入框
       this.textarea.value = '';
+      this.titleInput.value = '';
+      this.labelsInput.value = '';
       
       // 重新渲染
       this.renderNotes();
@@ -421,12 +453,33 @@
       showNotification('✓ 笔记已删除', 'success');
     }
 
+    // 复制笔记内容
+    async copyNoteContent(noteId) {
+      const note = this.notes.find(n => n.id === noteId);
+      if (!note) return;
+
+      try {
+        await navigator.clipboard.writeText(note.content);
+        showNotification('✓ 内容已复制', 'success');
+      } catch (err) {
+        console.error('复制失败:', err);
+        showNotification('✗ 复制失败', 'error');
+      }
+    }
+
     // 发送笔记到 Webhook
     async sendNoteToWebhook(noteId) {
       const note = this.notes.find(n => n.id === noteId);
       if (!note) return;
 
-      await sendToWebhook(note.content);
+      // 构建更丰富的数据对象
+      const data = {
+        idea: note.content,
+        title: note.title || '',
+        labels: note.labels ? note.labels.join(', ') : ''
+      };
+
+      await sendToWebhook(data);
     }
 
     // 更新徽章数字

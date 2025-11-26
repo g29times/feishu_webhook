@@ -76,6 +76,83 @@
       font-size: 11px;
       opacity: 0.8;
     }
+    .input-group {
+      margin-bottom: 10px;
+    }
+    .input-group input {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 12px;
+      font-family: inherit;
+      transition: all 0.2s;
+    }
+    .input-group textarea {
+      width: 100%;
+      padding: 8px 12px;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      font-size: 12px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Consolas', 'source-code-pro', monospace;
+      transition: all 0.2s;
+      resize: vertical;
+      min-height: 100px;
+    }
+    .input-group textarea:focus {
+      outline: none;
+      background: rgba(255, 255, 255, 0.25);
+      border-color: rgba(255, 255, 255, 0.5);
+    }
+    .input-group input::placeholder,
+    .input-group textarea::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
+    .input-group label {
+      display: block;
+      font-size: 12px;
+      margin-bottom: 6px;
+      opacity: 0.9;
+    }
+    .help-text {
+      font-size: 11px;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+    .btn {
+      width: 100%;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.9);
+      color: #667eea;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .btn:hover {
+      background: white;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    .btn:active {
+      transform: translateY(0);
+    }
+    .message {
+      margin-top: 8px;
+      font-size: 12px;
+      text-align: center;
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+    .message.show {
+      opacity: 1;
+    }
   </style>
 </head>
 <body>
@@ -94,10 +171,25 @@
   </div>
 
   <div class="card">
-    <h3>Webhook地址</h3>
-    <p style="font-size: 11px; word-break: break-all; opacity: 0.8;">
-      https://www.feishu.cn/flow/api/trigger-webhook/f0b419896d69c20daf099813dfcf3126
-    </p>
+    <h3>Webhook配置</h3>
+    <div class="input-group">
+      <label>Webhook 地址</label>
+      <input 
+        type="text" 
+        id="webhookUrl" 
+        placeholder="请输入 Webhook 地址"
+      />
+    </div>
+    <div class="input-group">
+      <label>请求体模版 (JSON)</label>
+      <textarea 
+        id="requestBody" 
+        placeholder='{ "text": "{{text}}", "url": "{{url}}" }'
+      ></textarea>
+      <div class="help-text">支持占位符: {{text}} 内容, {{title}} 标题, {{labels}} 标签, {{url}} 地址</div>
+    </div>
+    <button class="btn" id="saveBtn">💾 保存配置</button>
+    <div class="message" id="message"></div>
   </div>
 
   <div class="status">

@@ -327,6 +327,11 @@
   color: white;
 }
 
+.note-item-btn.copy:hover {
+  background: #3b82f6;
+  color: white;
+}
+
 .note-item-btn.delete:hover {
   background: #f5576c;
   color: white;
@@ -337,7 +342,71 @@
   height: 16px;
 }
 
-/* 输入区域 */
+
+/* 笔记标题输入 */
+.note-input-title {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 8px;
+  transition: all 0.2s;
+  box-sizing: border-box;
+  font-weight: 600;
+}
+
+.note-input-title:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* 笔记标签输入 */
+.note-input-labels {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 13px;
+  margin-top: 8px;
+  transition: all 0.2s;
+  box-sizing: border-box;
+  color: #4b5563;
+}
+
+.note-input-labels:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+/* 笔记显示样式增强 */
+.note-item-title {
+  font-weight: 600;
+  font-size: 15px;
+  color: #111827;
+  margin-bottom: 6px;
+  word-wrap: break-word;
+}
+
+.note-item-labels {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+.note-label-tag {
+  font-size: 11px;
+  padding: 2px 8px;
+  background: #f3f4f6;
+  color: #4b5563;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+}
+
 .note-input-container {
   padding: 16px;
   border-top: 1px solid #e5e7eb;
