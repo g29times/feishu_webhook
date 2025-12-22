@@ -1,4 +1,4 @@
-// 划线取词助手 - Background Script
+// 飞书网页助手 - Background Script
 // 用于处理跨域请求
 
 // 默认 Webhook 地址
@@ -6,7 +6,9 @@ const DEFAULT_WEBHOOK_URL = 'https://www.feishu.cn/flow/api/trigger-webhook/f0b4
 // 默认请求体模版
 const DEFAULT_REQUEST_BODY = JSON.stringify({
   idea: "{{text}}",
-  url: "{{url}}"
+  url: "{{url}}",
+  title: "{{title}}",
+  labels: "{{labels}}"
 }, null, 2);
 
 // 监听来自content script的消息
@@ -75,8 +77,8 @@ async function sendToWebhook(idea, url) {
     };
 
     if (typeof idea === 'object' && idea !== null) {
-      // 来自笔记的丰富数据
-      templateData.text = idea.idea || '';
+      // 来自笔记的丰富数据（idea字段存储内容）
+      templateData.text = idea.idea || idea.text || '';
       templateData.title = idea.title || '';
       templateData.labels = idea.labels || '';
     } else {
@@ -85,7 +87,7 @@ async function sendToWebhook(idea, url) {
       templateData.title = '';
       templateData.labels = '';
     }
-    
+
     // 解析模板并替换数据
     let requestBody;
     try {
@@ -129,4 +131,4 @@ async function sendToWebhook(idea, url) {
   }
 }
 
-console.log('划线取词助手 Background Script 已加载');
+console.log('飞书网页助手 Background Script 已加载');

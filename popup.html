@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="UTF-8">
-  <title>划线取词助手</title>
+  <title>飞书网页助手</title>
   <style>
     * {
       margin: 0;
@@ -157,7 +157,7 @@
 </head>
 <body>
   <div class="header">
-    <h1>📝 划线取词助手</h1>
+    <h1>📝 飞书网页助手</h1>
     <p>快速收集网页灵感</p>
   </div>
 
@@ -167,6 +167,7 @@
       <li>在任意网页上选中文字</li>
       <li>点击出现的紫色圆形按钮</li>
       <li>选中的文字将发送到飞书</li>
+      <li>https://botbuilder.feishu.cn/home</li>
     </ul>
   </div>
 
@@ -184,7 +185,7 @@
       <label>请求体模版 (JSON)</label>
       <textarea 
         id="requestBody" 
-        placeholder='{ "text": "{{text}}", "url": "{{url}}" }'
+        placeholder='{ "title": "{{title}}", "idea": "{{text}}", "labels": "{{labels}}", "url": "{{url}}" }'
       ></textarea>
       <div class="help-text">支持占位符: {{text}} 内容, {{title}} 标题, {{labels}} 标签, {{url}} 地址</div>
     </div>

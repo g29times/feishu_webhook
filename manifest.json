@@ -1,6 +1,6 @@
 {
   "manifest_version": 3,
-  "name": "划线取词助手",
+  "name": "飞书网页助手",
   "version": "1.0",
   "description": "划线选中文字后，点击浮动按钮发送到飞书webhook",
   "permissions": [
