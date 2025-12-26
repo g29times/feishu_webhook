@@ -470,10 +470,8 @@
           
         return `
         <div class="note-item" data-id="${note.id}">
-          ${titleHtml}
-          <div class="note-item-content">${this.escapeHtml(note.content)}</div>
-          ${labelsHtml}
           <div class="note-item-footer">
+            <div class="note-item-time">${this.formatTime(note.createdAt)}</div>
             <div class="note-item-actions">
               <button class="note-item-btn copy" data-action="copy" title="复制内容">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -494,8 +492,10 @@
                 </svg>
               </button>
             </div>
-            <div class="note-item-time">${this.formatTime(note.createdAt)}</div>
           </div>
+          ${titleHtml}
+          <div class="note-item-content">${this.escapeHtml(note.content)}</div>
+          ${labelsHtml}
         </div>
       `}).join('');
 
