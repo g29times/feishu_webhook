@@ -92,9 +92,11 @@
           }
 
           if (response && response.success) {
+            console.log('[feishu_webhook] send success');
             // 成功提示
             showNotification('✓ 已发送到飞书', 'success');
           } else {
+            console.error('[feishu_webhook] send failed:', response && response.error ? response.error : response);
             showNotification('✗ 发送失败', 'error');
           }
         }
@@ -472,7 +474,6 @@
           <div class="note-item-content">${this.escapeHtml(note.content)}</div>
           ${labelsHtml}
           <div class="note-item-footer">
-            <div class="note-item-time">${this.formatTime(note.createdAt)}</div>
             <div class="note-item-actions">
               <button class="note-item-btn copy" data-action="copy" title="复制内容">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -493,6 +494,7 @@
                 </svg>
               </button>
             </div>
+            <div class="note-item-time">${this.formatTime(note.createdAt)}</div>
           </div>
         </div>
       `}).join('');

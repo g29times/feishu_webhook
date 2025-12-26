@@ -1,8 +1,6 @@
 // 飞书网页助手 - Background Script
 // 用于处理跨域请求
 
-// 默认 Webhook 地址
-const DEFAULT_WEBHOOK_URL = 'https://www.feishu.cn/flow/api/trigger-webhook/f0b419896d69c20daf099813dfcf3126';
 // 默认请求体模版
 const DEFAULT_REQUEST_BODY = JSON.stringify({
   idea: "{{text}}",
@@ -33,7 +31,7 @@ async function getWebhookConfig() {
   return new Promise((resolve) => {
     chrome.storage.local.get(['webhookUrl', 'requestBody'], function(result) {
       resolve({
-        url: result.webhookUrl || DEFAULT_WEBHOOK_URL,
+        url: (result.webhookUrl || '').trim(),
         bodyTemplate: result.requestBody || DEFAULT_REQUEST_BODY
       });
     });
@@ -70,6 +68,10 @@ function processTemplate(obj, data) {
 async function sendToWebhook(idea, url) {
   try {
     const config = await getWebhookConfig();
+
+    if (!config.url) {
+      throw new Error('未配置 Webhook 地址，请先在插件设置中填写 Webhook URL');
+    }
     
     // 准备模板数据
     let templateData = {
@@ -103,11 +105,6 @@ async function sendToWebhook(idea, url) {
       };
     }
 
-    console.log('准备发送到 Webhook:', { 
-      webhookUrl: config.url, 
-      body: requestBody 
-    });
-    
     const response = await fetch(config.url, {
       method: 'POST',
       headers: {
@@ -115,18 +112,16 @@ async function sendToWebhook(idea, url) {
       },
       body: JSON.stringify(requestBody)
     });
-    
-    console.log('Webhook 响应状态:', response.status, response.statusText);
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     const data = await response.text();
-    console.log('发送成功:', data);
+    console.log('[feishu_webhook] send success', { status: response.status });
     return data;
   } catch (error) {
-    console.error('发送失败:', error);
+    console.error('[feishu_webhook] send failed', error);
     throw error;
   }
 }

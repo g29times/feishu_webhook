@@ -1,7 +1,5 @@
 // 飞书网页助手 - Popup Script
 
-// 默认 Webhook 地址
-const DEFAULT_WEBHOOK_URL = 'https://www.feishu.cn/flow/api/trigger-webhook/f0b419896d69c20daf099813dfcf3126';
 // 默认请求体模版
 const DEFAULT_REQUEST_BODY = JSON.stringify({
   idea: "{{text}}",
@@ -32,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // 加载配置
   function loadConfig() {
     chrome.storage.local.get(['webhookUrl', 'requestBody'], function(result) {
-      webhookInput.value = result.webhookUrl || DEFAULT_WEBHOOK_URL;
+      webhookInput.value = (result.webhookUrl || '').trim();
       requestBodyInput.value = result.requestBody || DEFAULT_REQUEST_BODY;
     });
   }
