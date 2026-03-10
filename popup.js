@@ -11,11 +11,17 @@ document.addEventListener('DOMContentLoaded', function() {
   
   const webhookInput = document.getElementById('webhookUrl');
   const requestBodyInput = document.getElementById('requestBody');
+  const enableFloatingInput = document.getElementById('enableFloatingBall');
   const saveBtn = document.getElementById('saveBtn');
   const message = document.getElementById('message');
 
   // 加载已保存的配置
   loadConfig();
+
+  // 开关即时保存（不依赖保存按钮）
+  enableFloatingInput.addEventListener('change', () => {
+    chrome.storage.local.set({ enableFloatingBall: enableFloatingInput.checked });
+  });
 
   // 保存按钮点击事件
   saveBtn.addEventListener('click', saveConfig);
@@ -29,9 +35,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // 加载配置
   function loadConfig() {
-    chrome.storage.local.get(['webhookUrl', 'requestBody'], function(result) {
+    chrome.storage.local.get(['webhookUrl', 'requestBody', 'enableFloatingBall'], function(result) {
       webhookInput.value = (result.webhookUrl || '').trim();
       requestBodyInput.value = result.requestBody || DEFAULT_REQUEST_BODY;
+      const enabled = result.enableFloatingBall;
+      enableFloatingInput.checked = enabled !== false; // 默认开启
     });
   }
 
@@ -62,7 +70,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // 保存到 storage
     chrome.storage.local.set({ 
       webhookUrl: url,
-      requestBody: bodyStr
+      requestBody: bodyStr,
+      enableFloatingBall: enableFloatingInput.checked
     }, function() {
       showMessage('✅ 保存成功', 'success');
       console.log('配置已保存');

@@ -5,6 +5,19 @@
   let floatingButton = null;
   let selectedText = '';
   let noteManager = null;
+  let floatingEnabled = true;
+
+  // 加载浮动按钮开关状态
+  function loadFloatingSetting() {
+    chrome.storage.local.get(['enableFloatingBall'], (result) => {
+      const enabled = result.enableFloatingBall;
+      floatingEnabled = enabled !== false; // 默认开启
+
+      if (!floatingEnabled) {
+        hideFloatingButton();
+      }
+    });
+  }
 
   // 创建浮动按钮
   function createFloatingButton() {
@@ -41,6 +54,8 @@
 
   // 显示浮动按钮
   function showFloatingButton(x, y, text) {
+    if (!floatingEnabled) return;
+
     const button = createFloatingButton();
     selectedText = text;
     
@@ -131,6 +146,11 @@
 
   // 监听文本选择
   document.addEventListener('mouseup', function(e) {
+    if (!floatingEnabled) {
+      hideFloatingButton();
+      return;
+    }
+
     // 延迟一点获取选中文本，确保选择完成
     setTimeout(() => {
       const selection = window.getSelection();
@@ -177,6 +197,18 @@
   }, true);
 
   console.log('飞书网页助手已加载');
+
+  // 初始化浮动按钮开关 & 监听变更
+  loadFloatingSetting();
+  chrome.storage.onChanged.addListener((changes, area) => {
+    if (area === 'local' && changes.enableFloatingBall) {
+      const nextValue = changes.enableFloatingBall.newValue;
+      floatingEnabled = nextValue !== false;
+      if (!floatingEnabled) {
+        hideFloatingButton();
+      }
+    }
+  });
 
   // ==================== 笔记管理器 ====================
   class NoteManager {
